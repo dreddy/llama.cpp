@@ -44,7 +44,7 @@ static const std::string PARTIAL_SUFFIX = ".downloadInProgress";
 
 static void write_etag(const std::string & path, const std::string & etag) {
     const std::string etag_path = path + ".etag";
-    fs_write_atomic(std::filesystem::u8path(etag_path), etag);
+    fs_write_atomic(std::filesystem::path(etag_path), etag);
     LOG_DBG("%s: file etag saved: %s\n", __func__, etag_path.c_str());
 }
 
@@ -261,7 +261,7 @@ static int common_download_file_single_online(const std::string & url,
     static const int max_attempts        = 3;
     static const int retry_delay_seconds = 2;
 
-    const bool file_exists = std::filesystem::exists(std::filesystem::u8path(path));
+    const bool file_exists = std::filesystem::exists(std::filesystem::path(path));
 
     if (file_exists && skip_etag) {
         LOG_DBG("%s: using cached file: %s\n", __func__, path.c_str());
@@ -462,7 +462,7 @@ int common_download_file_single(const std::string & url,
         return common_download_file_single_online(url, path, online_opts, skip_etag);
     }
 
-    if (!std::filesystem::exists(std::filesystem::u8path(path))) {
+    if (!std::filesystem::exists(std::filesystem::path(path))) {
         LOG_ERR("%s: required file is not available in cache (offline mode): %s\n", __func__, path.c_str());
         return -1;
     }
@@ -1162,7 +1162,7 @@ bool common_download_remove_sidecars(const std::string & hf_repo_with_tag, const
     for (const auto & s : sidecars) {
         const auto & f = plan.*s.file;
         if (!f.local_path.empty()) {
-            to_remove.emplace_back(std::filesystem::u8path(f.local_path));
+            to_remove.emplace_back(std::filesystem::path(f.local_path));
         }
     }
     if (to_remove.empty()) {
